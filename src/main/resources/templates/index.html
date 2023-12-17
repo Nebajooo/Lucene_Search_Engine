@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Lucene Search</title>
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+			margin: 20px;
+		}
+
+		h1 {
+			color: #333;
+		}
+
+		form {
+			margin-bottom: 20px;
+		}
+
+		label {
+			font-weight: bold;
+			margin-right: 10px;
+		}
+
+		input {
+			padding: 5px;
+			margin-left:25%;
+		
+			width: 40%;
+			height: 40px;
+			line-height: 28px;
+			padding: 0 1rem;
+			padding-left: 2.5rem;
+			border: 2px solid transparent;
+			border-radius: 8px;
+			outline: none;
+			background-color: #f3f3f4;
+			color: #0d0c22;
+			transition: .3s ease;
+		}
+
+		.input::placeholder {
+			color: #9e9ea7;
+		}
+
+		.input:focus,
+		input:hover {
+			outline: none;
+			border-color: rgb(0, 128, 255);
+			background-color: #fff;
+			box-shadow: 0 0 0 4px rgb(128, 128, 255/10%);
+		}
+
+		button {
+			padding: 7px;
+			cursor: pointer;
+		}
+
+		#searchResults {
+			margin: auto 0;
+			margin-top: 20px;
+			padding: 10px;
+			border: 1px solid #ddd;
+		}
+
+		.searchResult {
+			margin-bottom: 10px;
+		}
+	</style>
+</head>
+
+<body>
+	<h1 style="color: blue;text-align: center;">Lucene Search</h1>
+
+	<form id="searchForm">
+		<label for="query"></label>
+		<input type="text" id="query" name="query" required palceholde="Enter your search query..." r>
+		<button type="button" onclick="performSearch()" style="color: blue;">ፈልግ</button>
+	</form>
+
+	<div id="searchResults"></div>
+
+	<script>
+		function performSearch() {
+			var query = document.getElementById("query").value;
+
+			fetch('/search?query=' + encodeURIComponent(query))
+				.then(response => response.json())
+				.then(data => displaySearchResults(data))
+				.catch(error => console.error('Error:', error));
+		}
+
+		function displaySearchResults(results) {
+			var resultsDiv = document.getElementById('searchResults');
+			resultsDiv.innerHTML = '';
+
+			if (results.length === 0) {
+				resultsDiv.innerHTML = '<p>No results found.</p>';
+			} else {
+				results.forEach(result => {
+					var resultDiv = document.createElement('div');
+					resultDiv.classList.add('searchResult');
+
+
+					resultDiv.innerHTML = `<p><strong>Title:</strong> ${result.title}</p>
+                                           <p><strong>Author:</strong> ${result.author}</p>
+                                           <p><strong>Document ID:</strong> ${result.documentId}</p>`;
+				resultsDiv.appendChild(resultDiv);
+				});
+			}
+		}
+	</script>
+</body>
+
+</html>
